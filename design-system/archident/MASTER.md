@@ -7,8 +7,8 @@
 ---
 
 **Project:** ArchIdent
-**Generated:** 2026-05-18 12:11:39
-**Category:** Architecture / Interior
+**Generated:** 2026-05-19 00:29:29
+**Category:** Consulting Firm
 
 ---
 
@@ -18,24 +18,24 @@
 
 | Role | Hex | CSS Variable |
 |------|-----|--------------|
-| Primary | `#4F46E5` | `--color-primary` |
-| Secondary | `#6366F1` | `--color-secondary` |
-| CTA/Accent | `#F97316` | `--color-cta` |
-| Background | `#EEF2FF` | `--color-background` |
-| Text | `#312E81` | `--color-text` |
+| Primary | `#0F172A` | `--color-primary` |
+| Secondary | `#334155` | `--color-secondary` |
+| CTA/Accent | `#0369A1` | `--color-cta` |
+| Background | `#F8FAFC` | `--color-background` |
+| Text | `#020617` | `--color-text` |
 
-**Color Notes:** Indigo brand + doc hierarchy
+**Color Notes:** Professional navy + blue CTA
 
 ### Typography
 
-- **Heading Font:** Cinzel
-- **Body Font:** Josefin Sans
-- **Mood:** real estate, luxury, elegant, sophisticated, property, premium
-- **Google Fonts:** [Cinzel + Josefin Sans](https://fonts.google.com/share?selection.family=Cinzel:wght@400;500;600;700|Josefin+Sans:wght@300;400;500;600;700)
+- **Heading Font:** Plus Jakarta Sans
+- **Body Font:** Plus Jakarta Sans
+- **Mood:** friendly, modern, saas, clean, approachable, professional
+- **Google Fonts:** [Plus Jakarta Sans + Plus Jakarta Sans](https://fonts.google.com/share?selection.family=Plus+Jakarta+Sans:wght@300;400;500;600;700)
 
 **CSS Import:**
 ```css
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Josefin+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 ```
 
 ### Spacing Variables
@@ -68,7 +68,7 @@
 ```css
 /* Primary Button */
 .btn-primary {
-  background: #F97316;
+  background: #0369A1;
   color: white;
   padding: 12px 24px;
   border-radius: 8px;
@@ -85,8 +85,8 @@
 /* Secondary Button */
 .btn-secondary {
   background: transparent;
-  color: #4F46E5;
-  border: 2px solid #4F46E5;
+  color: #0F172A;
+  border: 2px solid #0F172A;
   padding: 12px 24px;
   border-radius: 8px;
   font-weight: 600;
@@ -99,7 +99,7 @@
 
 ```css
 .card {
-  background: #EEF2FF;
+  background: #F8FAFC;
   border-radius: 12px;
   padding: 24px;
   box-shadow: var(--shadow-md);
@@ -125,9 +125,9 @@
 }
 
 .input:focus {
-  border-color: #4F46E5;
+  border-color: #0F172A;
   outline: none;
-  box-shadow: 0 0 0 3px #4F46E520;
+  box-shadow: 0 0 0 3px #0F172A20;
 }
 ```
 
@@ -153,27 +153,29 @@
 
 ## Style Guidelines
 
-**Style:** Vibrant & Block-based
+**Style:** Trust & Authority
 
-**Keywords:** Bold, energetic, playful, block layout, geometric shapes, high color contrast, duotone, modern, energetic
+**Keywords:** Certificates/badges displayed, expert credentials, case studies with metrics, before/after comparisons, industry recognition, security badges
 
-**Best For:** Startups, creative agencies, gaming, social media, youth-focused, entertainment, consumer
+**Best For:** Healthcare/medical landing pages, financial services, enterprise software, premium/luxury products, legal services
 
-**Key Effects:** Large sections (48px+ gaps), animated patterns, bold hover (color shift), scroll-snap, large type (32px+), 200-300ms
+**Key Effects:** Badge hover effects, metric pulse animations, certificate carousel, smooth stat reveal
 
 ### Page Pattern
 
-**Pattern Name:** Feature-Rich Showcase
+**Pattern Name:** Enterprise Gateway
 
-- **CTA Placement:** Above fold
-- **Section Order:** Hero > Features > CTA
+- **Conversion Strategy:**  logo carousel,  tab switching for industries, Path selection (I am a...). Mega menu navigation. Trust signals prominent.
+- **CTA Placement:** Contact Sales (Primary) + Login (Secondary)
+- **Section Order:** 1. Hero (Video/Mission), 2. Solutions by Industry, 3. Solutions by Role, 4. Client Logos, 5. Contact Sales
 
 ---
 
 ## Anti-Patterns (Do NOT Use)
 
-- ❌ Flat design without depth
-- ❌ Text-heavy pages
+- ❌ Generic content
+- ❌ No credentials
+- ❌ AI purple/pink gradients
 
 ### Additional Forbidden Patterns
 
