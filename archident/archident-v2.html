@@ -1,0 +1,2443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ArchIdent — Identity Architecture, Measured</title>
+  <meta name="description" content="ArchIdent is an enterprise identity security assessment and architecture firm specialising in hybrid Microsoft estates. Fixed scope. Fixed deliverables. Fixed effort." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800&display=swap" rel="stylesheet" />
+  <style>
+    /* =========================================================
+       RESET & BASE
+    ========================================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 400;
+      line-height: 1.6;
+      color: #020617;
+      background-color: #F8FAFC;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    ul, ol {
+      list-style: none;
+    }
+
+    button {
+      cursor: pointer;
+      font-family: inherit;
+      border: none;
+      background: none;
+    }
+
+    /* =========================================================
+       COLOR TOKENS
+    ========================================================= */
+    :root {
+      --color-navy:        #0F172A;
+      --color-navy-light:  #1E293B;
+      --color-slate:       #334155;
+      --color-slate-mid:   #475569;
+      --color-slate-light: #64748B;
+      --color-cta:         #0369A1;
+      --color-cta-hover:   #0284C7;
+      --color-cta-dark:    #075985;
+      --color-bg:          #F8FAFC;
+      --color-bg-alt:      #F1F5F9;
+      --color-border:      #E2E8F0;
+      --color-border-mid:  #CBD5E1;
+      --color-text:        #020617;
+      --color-text-mid:    #334155;
+      --color-text-muted:  #64748B;
+      --color-white:       #FFFFFF;
+
+      --radius-sm:  4px;
+      --radius-md:  8px;
+      --radius-lg:  12px;
+      --radius-xl:  16px;
+
+      --shadow-sm:  0 1px 2px 0 rgba(0,0,0,0.05);
+      --shadow-md:  0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+      --shadow-lg:  0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+      --shadow-xl:  0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+
+      --transition-fast: 150ms ease;
+      --transition-base: 250ms ease;
+      --transition-slow: 400ms ease;
+
+      --max-width: 1200px;
+      --nav-height: 72px;
+    }
+
+    /* =========================================================
+       LAYOUT UTILITIES
+    ========================================================= */
+    .container {
+      max-width: var(--max-width);
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+
+    .section {
+      padding-top: 96px;
+      padding-bottom: 96px;
+    }
+
+    .section--sm {
+      padding-top: 64px;
+      padding-bottom: 64px;
+    }
+
+    .section--lg {
+      padding-top: 120px;
+      padding-bottom: 120px;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-cta);
+      margin-bottom: 16px;
+    }
+
+    .section-label--light {
+      color: #7DD3FC;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--color-text);
+      margin-bottom: 20px;
+    }
+
+    .section-title--light {
+      color: var(--color-white);
+    }
+
+    .section-subtitle {
+      font-size: 17px;
+      font-weight: 400;
+      line-height: 1.7;
+      color: var(--color-text-muted);
+      max-width: 600px;
+    }
+
+    .section-subtitle--light {
+      color: #94A3B8;
+    }
+
+    .section-header {
+      margin-bottom: 64px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .grid-5 {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+    }
+
+    /* =========================================================
+       NAVBAR
+    ========================================================= */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      height: var(--nav-height);
+      background-color: var(--color-navy);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      transition: box-shadow var(--transition-base), background-color var(--transition-base);
+    }
+
+    .navbar.scrolled {
+      background-color: rgba(15, 23, 42, 0.97);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .navbar__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    .navbar__brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .navbar__logo-mark {
+      width: 36px;
+      height: 36px;
+      background: var(--color-cta);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .navbar__logo-mark svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .navbar__wordmark {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .navbar__name {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--color-white);
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+
+    .navbar__tagline {
+      font-size: 10px;
+      font-weight: 500;
+      color: #64748B;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .navbar__nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .navbar__link {
+      font-size: 14px;
+      font-weight: 500;
+      color: #94A3B8;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      transition: color var(--transition-fast), background-color var(--transition-fast);
+    }
+
+    .navbar__link:hover {
+      color: var(--color-white);
+      background-color: rgba(255,255,255,0.06);
+    }
+
+    .navbar__actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      padding: 9px 20px;
+      transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+      white-space: nowrap;
+      letter-spacing: 0.01em;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn--primary {
+      background-color: var(--color-cta);
+      color: var(--color-white);
+    }
+
+    .btn--primary:hover {
+      background-color: var(--color-cta-hover);
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.4);
+    }
+
+    .btn--primary-lg {
+      background-color: var(--color-cta);
+      color: var(--color-white);
+      font-size: 16px;
+      padding: 14px 28px;
+      border-radius: var(--radius-md);
+    }
+
+    .btn--primary-lg:hover {
+      background-color: var(--color-cta-hover);
+      box-shadow: 0 6px 20px rgba(3, 105, 161, 0.45);
+    }
+
+    .btn--outline-light {
+      background-color: transparent;
+      color: #CBD5E1;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      font-size: 16px;
+      padding: 13px 28px;
+      border-radius: var(--radius-md);
+    }
+
+    .btn--outline-light:hover {
+      color: var(--color-white);
+      border-color: rgba(255,255,255,0.4);
+      background-color: rgba(255,255,255,0.06);
+    }
+
+    .btn--outline-dark {
+      background-color: transparent;
+      color: var(--color-slate);
+      border: 1.5px solid var(--color-border-mid);
+    }
+
+    .btn--outline-dark:hover {
+      color: var(--color-text);
+      border-color: var(--color-slate-light);
+      background-color: var(--color-bg-alt);
+    }
+
+    /* Hamburger */
+    .navbar__hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      transition: background-color var(--transition-fast);
+    }
+
+    .navbar__hamburger:hover {
+      background-color: rgba(255,255,255,0.06);
+    }
+
+    .navbar__hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background-color: #94A3B8;
+      border-radius: 2px;
+      transition: transform var(--transition-base), opacity var(--transition-base), width var(--transition-base);
+      transform-origin: center;
+    }
+
+    .navbar__hamburger.open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+    .navbar__hamburger.open span:nth-child(2) {
+      opacity: 0;
+      width: 0;
+    }
+    .navbar__hamburger.open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* Mobile menu */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: var(--nav-height);
+      left: 0;
+      right: 0;
+      background-color: var(--color-navy);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      z-index: 999;
+      padding: 16px 24px 24px;
+      flex-direction: column;
+      gap: 4px;
+      box-shadow: 0 16px 32px rgba(0,0,0,0.3);
+    }
+
+    .mobile-menu.open {
+      display: flex;
+    }
+
+    .mobile-menu__link {
+      font-size: 16px;
+      font-weight: 500;
+      color: #94A3B8;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      transition: color var(--transition-fast), background-color var(--transition-fast);
+    }
+
+    .mobile-menu__link:hover {
+      color: var(--color-white);
+      background-color: rgba(255,255,255,0.06);
+    }
+
+    .mobile-menu__divider {
+      height: 1px;
+      background-color: rgba(255,255,255,0.06);
+      margin: 8px 0;
+    }
+
+    .mobile-menu__cta {
+      margin-top: 8px;
+    }
+
+    .mobile-menu__cta .btn--primary {
+      width: 100%;
+      justify-content: center;
+      font-size: 15px;
+      padding: 12px 20px;
+    }
+
+    /* =========================================================
+       HERO
+    ========================================================= */
+    .hero {
+      background-color: var(--color-navy);
+      padding-top: calc(var(--nav-height) + 96px);
+      padding-bottom: 104px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background:
+        radial-gradient(ellipse 800px 600px at 70% 40%, rgba(3, 105, 161, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 600px 400px at 20% 80%, rgba(15, 23, 42, 0) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.08) 30%, rgba(255,255,255,0.08) 70%, transparent);
+    }
+
+    .hero__inner {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+    }
+
+    .hero__eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #7DD3FC;
+      margin-bottom: 28px;
+    }
+
+    .hero__eyebrow-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #7DD3FC;
+      flex-shrink: 0;
+    }
+
+    .hero__headline {
+      font-size: clamp(38px, 6.5vw, 68px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: var(--color-white);
+      margin-bottom: 28px;
+    }
+
+    .hero__headline em {
+      font-style: normal;
+      color: #7DD3FC;
+    }
+
+    .hero__body {
+      font-size: clamp(16px, 2vw, 19px);
+      font-weight: 400;
+      line-height: 1.7;
+      color: #94A3B8;
+      max-width: 640px;
+      margin-bottom: 44px;
+    }
+
+    .hero__ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 64px;
+    }
+
+    .hero__trust {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hero__trust-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #475569;
+    }
+
+    .hero__trust-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .trust-pill {
+      font-size: 12px;
+      font-weight: 600;
+      color: #94A3B8;
+      background-color: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 100px;
+      padding: 5px 14px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .trust-pill:hover {
+      background-color: rgba(255,255,255,0.08);
+      color: #CBD5E1;
+      border-color: rgba(255,255,255,0.14);
+    }
+
+    /* =========================================================
+       PROBLEM SECTION
+    ========================================================= */
+    .problem {
+      background-color: var(--color-bg);
+    }
+
+    .problem__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .problem-card {
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-slow);
+    }
+
+    .problem-card:hover {
+      border-color: var(--color-border-mid);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-3px);
+    }
+
+    .problem-card__icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      background-color: #FEF2F2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      flex-shrink: 0;
+    }
+
+    .problem-card__icon svg {
+      width: 24px;
+      height: 24px;
+      color: #DC2626;
+    }
+
+    .problem-card__title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text);
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .problem-card__body {
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--color-text-muted);
+      line-height: 1.7;
+    }
+
+    /* =========================================================
+       WHY ARCHIDENT
+    ========================================================= */
+    .why {
+      background-color: var(--color-navy);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .why::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(3,105,161,0.1) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .why .section-title {
+      color: var(--color-white);
+    }
+
+    .why .section-subtitle {
+      color: #94A3B8;
+    }
+
+    .why__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .why-card {
+      background-color: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius-lg);
+      padding: 40px 32px;
+      transition: background-color var(--transition-base), border-color var(--transition-base);
+    }
+
+    .why-card:hover {
+      background-color: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.12);
+    }
+
+    .why-card__number {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #475569;
+      margin-bottom: 20px;
+    }
+
+    .why-card__icon {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-md);
+      background-color: rgba(3, 105, 161, 0.15);
+      border: 1px solid rgba(3, 105, 161, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .why-card__icon svg {
+      width: 26px;
+      height: 26px;
+      color: #38BDF8;
+    }
+
+    .why-card__title {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--color-white);
+      letter-spacing: -0.01em;
+      margin-bottom: 14px;
+      line-height: 1.3;
+    }
+
+    .why-card__body {
+      font-size: 15px;
+      font-weight: 400;
+      color: #94A3B8;
+      line-height: 1.7;
+    }
+
+    /* =========================================================
+       METHODOLOGY
+    ========================================================= */
+    .methodology {
+      background-color: var(--color-bg-alt);
+    }
+
+    .methodology__grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .method-card {
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 36px 28px;
+      position: relative;
+      transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-slow);
+      overflow: hidden;
+    }
+
+    .method-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--color-cta);
+      opacity: 0;
+      transition: opacity var(--transition-base);
+    }
+
+    .method-card:hover {
+      border-color: var(--color-border-mid);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+    }
+
+    .method-card:hover::before {
+      opacity: 1;
+    }
+
+    .method-card__vol {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-cta);
+      margin-bottom: 16px;
+    }
+
+    .method-card__number {
+      font-size: 56px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--color-bg-alt);
+      line-height: 1;
+      margin-bottom: 20px;
+      user-select: none;
+    }
+
+    .method-card__title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text);
+      letter-spacing: -0.01em;
+      line-height: 1.35;
+      margin-bottom: 12px;
+    }
+
+    .method-card__body {
+      font-size: 14px;
+      color: var(--color-text-muted);
+      line-height: 1.7;
+    }
+
+    .methodology__framework {
+      margin-top: 56px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 24px 32px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+    }
+
+    .methodology__framework-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .methodology__framework-divider {
+      width: 1px;
+      height: 24px;
+      background-color: var(--color-border);
+      flex-shrink: 0;
+    }
+
+    .methodology__framework-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .framework-tag {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-slate);
+      background-color: var(--color-bg-alt);
+      border: 1px solid var(--color-border);
+      border-radius: 100px;
+      padding: 5px 14px;
+    }
+
+    /* =========================================================
+       PRODUCT LADDER
+    ========================================================= */
+    .products {
+      background-color: var(--color-bg);
+    }
+
+    .products__grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .tier-card {
+      background-color: var(--color-white);
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-slow);
+      position: relative;
+    }
+
+    .tier-card:hover {
+      border-color: var(--color-border-mid);
+      box-shadow: var(--shadow-xl);
+      transform: translateY(-4px);
+    }
+
+    .tier-card--featured {
+      border-color: var(--color-cta);
+      border-width: 2px;
+    }
+
+    .tier-card--featured:hover {
+      border-color: var(--color-cta-hover);
+    }
+
+    .tier-card__featured-badge {
+      position: absolute;
+      top: -1px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--color-cta);
+      color: var(--color-white);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      white-space: nowrap;
+    }
+
+    .tier-card__tier-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 20px;
+    }
+
+    .tier-badge-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .tier-badge-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Tier color tokens */
+    .tier--bronze .tier-badge-icon { background-color: #FEF3C7; }
+    .tier--bronze .tier-badge-icon svg { color: #92400E; }
+    .tier--bronze .tier-card__tier-label { color: #92400E; }
+
+    .tier--silver .tier-badge-icon { background-color: #F1F5F9; }
+    .tier--silver .tier-badge-icon svg { color: #475569; }
+    .tier--silver .tier-card__tier-label { color: #475569; }
+
+    .tier--gold .tier-badge-icon { background-color: #FFFBEB; }
+    .tier--gold .tier-badge-icon svg { color: #B45309; }
+    .tier--gold .tier-card__tier-label { color: #B45309; }
+
+    .tier--platinum .tier-badge-icon { background-color: #EFF6FF; }
+    .tier--platinum .tier-badge-icon svg { color: #1D4ED8; }
+    .tier--platinum .tier-card__tier-label { color: #1D4ED8; }
+
+    .tier--continuous .tier-badge-icon { background-color: #F0FDF4; }
+    .tier--continuous .tier-badge-icon svg { color: #166534; }
+    .tier--continuous .tier-card__tier-label { color: #166534; }
+
+    .tier-card__tier-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .tier-card__name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text);
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+
+    .tier-card__tagline {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      line-height: 1.5;
+      margin-bottom: 24px;
+      font-weight: 400;
+    }
+
+    .tier-card__divider {
+      height: 1px;
+      background-color: var(--color-border);
+      margin-bottom: 20px;
+    }
+
+    .tier-card__includes-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin-bottom: 14px;
+    }
+
+    .tier-card__features {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 28px;
+      flex: 1;
+    }
+
+    .tier-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      font-size: 13px;
+      color: var(--color-text-mid);
+      line-height: 1.5;
+      font-weight: 400;
+    }
+
+    .tier-feature__check {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .tier-feature__check svg {
+      width: 16px;
+      height: 16px;
+      color: var(--color-cta);
+    }
+
+    .tier-card__cta {
+      display: flex;
+      justify-content: center;
+    }
+
+    .tier-card__cta .btn--primary {
+      width: 100%;
+      justify-content: center;
+      font-size: 14px;
+      padding: 10px 20px;
+    }
+
+    .tier-card__cta .btn--outline-dark {
+      width: 100%;
+      justify-content: center;
+      font-size: 14px;
+      padding: 9px 20px;
+    }
+
+    /* =========================================================
+       FRAMEWORK ALIGNMENT (Trust Strip)
+    ========================================================= */
+    .framework {
+      background-color: var(--color-navy-light);
+      padding-top: 48px;
+      padding-bottom: 48px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .framework__inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .framework__label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #475569;
+      text-align: center;
+    }
+
+    .framework__strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .framework__item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-right: 1px solid rgba(255,255,255,0.07);
+      transition: background-color var(--transition-fast);
+    }
+
+    .framework__item:last-child {
+      border-right: none;
+    }
+
+    .framework__item:hover {
+      background-color: rgba(255,255,255,0.03);
+    }
+
+    .framework__item-icon {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .framework__item-icon svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .framework__item-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #94A3B8;
+      white-space: nowrap;
+    }
+
+    /* =========================================================
+       CTA SECTION
+    ========================================================= */
+    .cta-section {
+      background-color: var(--color-navy);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse 700px 400px at 50% 50%, rgba(3,105,161,0.14) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .cta-section__inner {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .cta-section__eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #7DD3FC;
+      margin-bottom: 20px;
+    }
+
+    .cta-section__headline {
+      font-size: clamp(30px, 4.5vw, 48px);
+      font-weight: 800;
+      color: var(--color-white);
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .cta-section__headline em {
+      font-style: normal;
+      color: #7DD3FC;
+    }
+
+    .cta-section__body {
+      font-size: 17px;
+      color: #94A3B8;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+
+    .cta-section__actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    /* =========================================================
+       FOOTER
+    ========================================================= */
+    .footer {
+      background-color: #080F1E;
+      padding-top: 64px;
+      padding-bottom: 40px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .footer__top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 56px;
+    }
+
+    .footer__brand {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .footer__logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .footer__logo-mark {
+      width: 34px;
+      height: 34px;
+      background: var(--color-cta);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .footer__logo-mark svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .footer__logo-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-white);
+      letter-spacing: -0.01em;
+    }
+
+    .footer__description {
+      font-size: 14px;
+      color: #475569;
+      line-height: 1.7;
+      max-width: 280px;
+    }
+
+    .footer__tagline {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #334155;
+    }
+
+    .footer__col-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #475569;
+      margin-bottom: 20px;
+    }
+
+    .footer__links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer__link {
+      font-size: 14px;
+      color: #475569;
+      transition: color var(--transition-fast);
+      font-weight: 400;
+    }
+
+    .footer__link:hover {
+      color: #94A3B8;
+    }
+
+    .footer__bottom {
+      border-top: 1px solid rgba(255,255,255,0.04);
+      padding-top: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .footer__copyright {
+      font-size: 13px;
+      color: #334155;
+    }
+
+    .footer__legal {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer__legal-link {
+      font-size: 13px;
+      color: #334155;
+      transition: color var(--transition-fast);
+    }
+
+    .footer__legal-link:hover {
+      color: #64748B;
+    }
+
+    /* =========================================================
+       ABOUT SECTION (anchor target)
+    ========================================================= */
+    .about {
+      background-color: var(--color-bg-alt);
+    }
+
+    .about__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .about__content .section-label {
+      display: block;
+      margin-bottom: 14px;
+    }
+
+    .about__body {
+      font-size: 16px;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .about__body:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .about__stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .about-stat {
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+    }
+
+    .about-stat__value {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--color-text);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .about-stat__value span {
+      color: var(--color-cta);
+    }
+
+    .about-stat__label {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+    @media (max-width: 1100px) {
+      .products__grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .footer__top {
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .methodology__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .about__inner {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .framework__strip {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .framework__item {
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+        width: 100%;
+        justify-content: center;
+      }
+
+      .framework__item:last-child {
+        border-bottom: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --nav-height: 64px;
+      }
+
+      .section {
+        padding-top: 72px;
+        padding-bottom: 72px;
+      }
+
+      .section--lg {
+        padding-top: 88px;
+        padding-bottom: 88px;
+      }
+
+      .hero {
+        padding-top: calc(var(--nav-height) + 64px);
+        padding-bottom: 72px;
+      }
+
+      .navbar__nav {
+        display: none;
+      }
+
+      .navbar__hamburger {
+        display: flex;
+      }
+
+      .problem__grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .why__grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .products__grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .section-header {
+        margin-bottom: 48px;
+      }
+
+      .hero__ctas {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .hero__ctas .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .footer__top {
+        grid-template-columns: 1fr;
+        gap: 36px;
+      }
+
+      .footer__bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .methodology__framework {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 20px 24px;
+      }
+
+      .methodology__framework-divider {
+        display: none;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .products__grid {
+        grid-template-columns: 1fr;
+      }
+
+      .methodology__grid {
+        grid-template-columns: 1fr;
+      }
+
+      .about__stats {
+        grid-template-columns: 1fr;
+      }
+
+      .hero__trust {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .container {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+    }
+
+    /* =========================================================
+       UTILITY / MISC
+    ========================================================= */
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .text-center { text-align: center; }
+    .text-left { text-align: left; }
+
+    /* Scroll indicator line at top of page */
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: var(--color-cta);
+      z-index: 1001;
+      width: 0%;
+      transition: width 50ms linear;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Scroll progress indicator -->
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <!-- =========================================================
+       NAVBAR
+  ========================================================= -->
+  <nav class="navbar" id="navbar" role="navigation" aria-label="Primary navigation">
+    <div class="container">
+      <div class="navbar__inner">
+
+        <a href="#" class="navbar__brand" aria-label="ArchIdent — Home">
+          <div class="navbar__logo-mark" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M10 2L2 16h3.5l1.5-3h6l1.5 3H18L10 2zm0 3.5L12.8 11H7.2L10 5.5z" fill="white"/>
+            </svg>
+          </div>
+          <div class="navbar__wordmark">
+            <span class="navbar__name">ArchIdent</span>
+            <span class="navbar__tagline">Identity Architecture, Measured</span>
+          </div>
+        </a>
+
+        <ul class="navbar__nav" role="list">
+          <li><a href="#methodology" class="navbar__link">Methodology</a></li>
+          <li><a href="#products" class="navbar__link">Products</a></li>
+          <li><a href="#about" class="navbar__link">About</a></li>
+          <li><a href="#contact" class="navbar__link">Contact</a></li>
+        </ul>
+
+        <div class="navbar__actions">
+          <a href="#contact" class="btn btn--primary">Contact Sales</a>
+          <button class="navbar__hamburger" id="hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobileMenu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true" role="menu">
+    <a href="#methodology" class="mobile-menu__link" role="menuitem">Methodology</a>
+    <a href="#products" class="mobile-menu__link" role="menuitem">Products</a>
+    <a href="#about" class="mobile-menu__link" role="menuitem">About</a>
+    <a href="#contact" class="mobile-menu__link" role="menuitem">Contact</a>
+    <div class="mobile-menu__divider"></div>
+    <div class="mobile-menu__cta">
+      <a href="#contact" class="btn btn--primary">Contact Sales</a>
+    </div>
+  </div>
+
+  <main>
+
+    <!-- =========================================================
+         HERO
+    ========================================================= -->
+    <section class="hero" id="home" aria-labelledby="heroHeadline">
+      <div class="container">
+        <div class="hero__inner">
+
+          <div class="hero__eyebrow">
+            <span class="hero__eyebrow-dot" aria-hidden="true"></span>
+            Enterprise Identity Security Assessment
+          </div>
+
+          <h1 class="hero__headline" id="heroHeadline">
+            Your Privileged Access<br/>
+            Programme Has<br/>
+            <em>Stalled. We Know Why.</em>
+          </h1>
+
+          <p class="hero__body">
+            Incomplete asset registers. Governance frameworks that aged out before the ink dried. Remediation efforts without verified scope. ArchIdent delivers fixed-scope, fixed-deliverable identity security engagements that surface facts, not assumptions — across your entire hybrid Microsoft estate.
+          </p>
+
+          <div class="hero__ctas">
+            <a href="#products" class="btn btn--primary-lg">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              View the Product Ladder
+            </a>
+            <a href="#methodology" class="btn btn--outline-light">
+              Explore the ODA 10+7 Methodology
+            </a>
+          </div>
+
+          <div class="hero__trust">
+            <span class="hero__trust-label">Framework Alignment</span>
+            <div class="hero__trust-pills">
+              <span class="trust-pill">ODA 10+7</span>
+              <span class="trust-pill">Microsoft RAMP</span>
+              <span class="trust-pill">Enterprise Access Model</span>
+              <span class="trust-pill">Active Directory</span>
+              <span class="trust-pill">Microsoft Entra ID</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         THE PROBLEM
+    ========================================================= -->
+    <section class="problem section" id="problem" aria-labelledby="problemTitle">
+      <div class="container">
+
+        <div class="section-header">
+          <span class="section-label">The Problem</span>
+          <h2 class="section-title" id="problemTitle">Why Privileged Access Programmes Fail</h2>
+          <p class="section-subtitle">
+            Identity security programmes stall for three consistent, structural reasons. Recognising them is the first step — but only verified discovery resolves them.
+          </p>
+        </div>
+
+        <div class="problem__grid" role="list">
+
+          <article class="problem-card" role="listitem">
+            <div class="problem-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+                <rect x="9" y="3" width="6" height="4" rx="2"/>
+                <path d="M9 12h6M9 16h4"/>
+                <circle cx="19" cy="19" r="3"/>
+                <path d="M17 19h4M19 17v4"/>
+              </svg>
+            </div>
+            <h3 class="problem-card__title">Incomplete Asset Registers</h3>
+            <p class="problem-card__body">
+              Privileged identity programmes cannot succeed without a verified, comprehensive register of privileged accounts, service accounts, and administrative roles across both Active Directory and Microsoft Entra ID. Most organisations discover they are working from an assumption, not a fact.
+            </p>
+          </article>
+
+          <article class="problem-card" role="listitem">
+            <div class="problem-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+                <path d="M9 1l-3 3 3 3M15 1l3 3-3 3"/>
+              </svg>
+            </div>
+            <h3 class="problem-card__title">Governance That Ages Out</h3>
+            <p class="problem-card__body">
+              Identity governance frameworks deteriorate from the moment they are written. Without continuous validation mechanisms and defined ownership, policy documents become a record of intent rather than a description of reality. Audit cycles reveal the gap — often at the worst possible moment.
+            </p>
+          </article>
+
+          <article class="problem-card" role="listitem">
+            <div class="problem-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+                <path d="M8 10h.01M12 10h.01M16 10h.01"/>
+              </svg>
+            </div>
+            <h3 class="problem-card__title">Remediation Without Scope</h3>
+            <p class="problem-card__body">
+              Remediation workstreams launched without a verified baseline scope are expensive, disruptive, and frequently incomplete. Effort is applied to visible problems while structural weaknesses remain unaddressed. The result is a programme that appears to progress but does not resolve the underlying risk.
+            </p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         WHY ARCHIDENT
+    ========================================================= -->
+    <section class="why section" id="why" aria-labelledby="whyTitle">
+      <div class="container">
+
+        <div class="section-header">
+          <span class="section-label section-label--light">Why ArchIdent</span>
+          <h2 class="section-title section-title--light" id="whyTitle">Three Differentiators. No Exceptions.</h2>
+          <p class="section-subtitle section-subtitle--light">
+            ArchIdent was built to remove the structural reasons identity security engagements fail. The approach is deliberate. The constraints are intentional.
+          </p>
+        </div>
+
+        <div class="why__grid" role="list">
+
+          <article class="why-card" role="listitem">
+            <div class="why-card__number">01</div>
+            <div class="why-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                <rect x="14" y="14" width="7" height="7" rx="1"/>
+              </svg>
+            </div>
+            <h3 class="why-card__title">Productised, Not Bespoke</h3>
+            <p class="why-card__body">
+              Every engagement has fixed scope, fixed deliverables, and fixed effort. Customers know precisely what they are purchasing before a single hour is committed. There are no scope creep conversations, no mid-engagement renegotiations, and no ambiguity about what success looks like.
+            </p>
+          </article>
+
+          <article class="why-card" role="listitem">
+            <div class="why-card__number">02</div>
+            <div class="why-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="M9 12l2 2 4-4"/>
+              </svg>
+            </div>
+            <h3 class="why-card__title">Solution-Focused, Not Blame-Focused</h3>
+            <p class="why-card__body">
+              Findings are framed as systemic gaps — architectural, procedural, and structural — not as team failures or individual errors. Deliverables are written to be politically neutral, enabling internal action without triggering defensive responses. The goal is resolution, not attribution.
+            </p>
+          </article>
+
+          <article class="why-card" role="listitem">
+            <div class="why-card__number">03</div>
+            <div class="why-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="M21 21l-4.35-4.35"/>
+                <path d="M11 8v6M8 11h6"/>
+              </svg>
+            </div>
+            <h3 class="why-card__title">Discovery Before Assumption</h3>
+            <p class="why-card__body">
+              Every finding is grounded in verified discovery. Nothing is assumed, everything is confirmed against live environment data. The ODA 10+7 framework imposes a structured discovery phase before any assessment or recommendation is made — because an assessment built on assumptions is not an assessment.
+            </p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         METHODOLOGY
+    ========================================================= -->
+    <section class="methodology section" id="methodology" aria-labelledby="methodologyTitle">
+      <div class="container">
+
+        <div class="section-header">
+          <span class="section-label">The Methodology</span>
+          <h2 class="section-title" id="methodologyTitle">The ODA 10+7 Framework</h2>
+          <p class="section-subtitle">
+            A four-volume methodology reference set aligned with Microsoft RAMP and the Microsoft Enterprise Access Model. Structured. Sequenced. Auditable.
+          </p>
+        </div>
+
+        <div class="methodology__grid" role="list">
+
+          <article class="method-card" role="listitem">
+            <div class="method-card__vol">Volume I</div>
+            <div class="method-card__number" aria-hidden="true">01</div>
+            <h3 class="method-card__title">Tier 0 Discovery</h3>
+            <p class="method-card__body">
+              A structured, systematic discovery of all Tier 0 assets across the hybrid estate. Produces a verified, comprehensive register of privileged accounts, high-value targets, and control plane assets in both Active Directory and Microsoft Entra ID. Nothing is assumed. Everything is confirmed.
+            </p>
+          </article>
+
+          <article class="method-card" role="listitem">
+            <div class="method-card__vol">Volume II</div>
+            <div class="method-card__number" aria-hidden="true">02</div>
+            <h3 class="method-card__title">Governance Framework</h3>
+            <p class="method-card__body">
+              Assessment of existing governance structures against defined, measurable criteria. Identifies governance gaps, expired or absent ownership models, and policy-versus-reality divergence. Produces an actionable gap analysis with prioritised findings and remediation guidance.
+            </p>
+          </article>
+
+          <article class="method-card" role="listitem">
+            <div class="method-card__vol">Volume III</div>
+            <div class="method-card__number" aria-hidden="true">03</div>
+            <h3 class="method-card__title">Enterprise Access Model Design Pattern</h3>
+            <p class="method-card__body">
+              Architectural design patterns for implementing the Microsoft Enterprise Access Model in hybrid estates. Translates the conceptual framework into environment-specific, deliverable architecture — including tiering models, delegation design, and privilege segmentation across on-premises and cloud control planes.
+            </p>
+          </article>
+
+          <article class="method-card" role="listitem">
+            <div class="method-card__vol">Volume IV</div>
+            <div class="method-card__number" aria-hidden="true">04</div>
+            <h3 class="method-card__title">RAMP Remediation Playbook</h3>
+            <p class="method-card__body">
+              A structured remediation playbook aligned with the Microsoft Rapid Modernisation Plan (RAMP). Sequences remediation activities by risk priority, defines success criteria, and provides implementation guidance. Built for environments where remediation must be sequenced carefully to avoid operational disruption.
+            </p>
+          </article>
+
+        </div>
+
+        <div class="methodology__framework" aria-label="Framework alignments">
+          <span class="methodology__framework-label">Aligned With</span>
+          <div class="methodology__framework-divider" aria-hidden="true"></div>
+          <div class="methodology__framework-tags" role="list">
+            <span class="framework-tag" role="listitem">ODA 10+7</span>
+            <span class="framework-tag" role="listitem">Microsoft RAMP</span>
+            <span class="framework-tag" role="listitem">Enterprise Access Model</span>
+            <span class="framework-tag" role="listitem">Active Directory</span>
+            <span class="framework-tag" role="listitem">Microsoft Entra ID</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================
+         PRODUCT LADDER
+    ========================================================= -->
+    <section class="products section--lg" id="products" aria-labelledby="productsTitle">
+      <div class="container">
+
+        <div class="section-header text-center">
+          <span class="section-label">The Product Ladder</span>
+          <h2 class="section-title" id="productsTitle">Fixed Scope. Fixed Deliverables. Fixed Effort.</h2>
+          <p class="section-subtitle" style="margin:0 auto;">
+            Five engagement tiers, each with defined scope and deliverables. Start where you are. Progress when you are ready. Every tier is a complete engagement in its own right.
+          </p>
+        </div>
+
+        <div class="products__grid" role="list">
+
+          <!-- Bronze -->
+          <article class="tier-card tier--bronze" role="listitem">
+            <div class="tier-card__tier-badge">
+              <div class="tier-badge-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+                </svg>
+              </div>
+              <span class="tier-card__tier-label">Bronze</span>
+            </div>
+            <h3 class="tier-card__name">Identity Health Baseline</h3>
+            <p class="tier-card__tagline">Discovery and assessment — the foundational engagement.</p>
+            <div class="tier-card__divider"></div>
+            <div class="tier-card__includes-label">Delivers</div>
+            <ul class="tier-card__features">
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                Verified Tier 0 asset register
+              </li>
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                Privileged account discovery across AD + Entra ID
+              </li>
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                Governance gap analysis
+              </li>
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                Prioritised findings report
+              </li>
+            </ul>
+            <div class="tier-card__cta">
+              <a href="#contact" class="btn btn--outline-dark">Start with Bronze</a>
+            </div>
+          </article>
+
+          <!-- Silver -->
+          <article class="tier-card tier--silver" role="listitem">
+            <div class="tier-card__tier-badge">
+              <div class="tier-badge-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+                </svg>
+              </div>
+              <span class="tier-card__tier-label">Silver</span>
+            </div>
+            <h3 class="tier-card__name">Baseline + Remediation Architecture</h3>
+            <p class="tier-card__tagline">Everything in Bronze, plus architectural recommendations.</p>
+            <div class="tier-card__divider"></div>
+            <div class="tier-card__includes-label">Includes Bronze, plus</div>
+            <ul class="tier-card__features">
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                Enterprise Access Model architecture
+              </li>
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                Tiering model and delegation design
+              </li>
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                RAMP-aligned remediation roadmap
+              </li>
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                Privilege segmentation blueprint
+              </li>
+            </ul>
+            <div class="tier-card__cta">
+              <a href="#contact" class="btn btn--outline-dark">Enquire</a>
+            </div>
+          </article>
+
+          <!-- Gold -->
+          <article class="tier-card tier--gold tier-card--featured" role="listitem">
+            <div class="tier-card__featured-badge">Most Selected</div>
+            <div class="tier-card__tier-badge">
+              <div class="tier-badge-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+                </svg>
+              </div>
+              <span class="tier-card__tier-label">Gold</span>
+            </div>
+            <h3 class="tier-card__name">Baseline, Architecture + Advisory</h3>
+            <p class="tier-card__tagline">Bronze and Silver, plus ongoing expert advisory.</p>
+            <div class="tier-card__divider"></div>
+            <div class="tier-card__includes-label">Includes Silver, plus</div>
+            <ul class="tier-card__features">
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                Named advisory engagement
+              </li>
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                Stakeholder briefings and workshops
+              </li>
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                Programme office support
+              </li>
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                Design review and Q&amp;A sessions
+              </li>
+            </ul>
+            <div class="tier-card__cta">
+              <a href="#contact" class="btn btn--primary">Enquire</a>
+            </div>
+          </article>
+
+          <!-- Platinum -->
+          <article class="tier-card tier--platinum" role="listitem">
+            <div class="tier-card__tier-badge">
+              <div class="tier-badge-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+                </svg>
+              </div>
+              <span class="tier-card__tier-label">Platinum</span>
+            </div>
+            <h3 class="tier-card__name">Remediation Execution</h3>
+            <p class="tier-card__tagline">Full delivery through to remediation completion.</p>
+            <div class="tier-card__divider"></div>
+            <div class="tier-card__includes-label">Includes Gold, plus</div>
+            <ul class="tier-card__features">
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                Hands-on remediation delivery
+              </li>
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                Configuration and implementation
+              </li>
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                Verification and sign-off
+              </li>
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                Closure report and evidence pack
+              </li>
+            </ul>
+            <div class="tier-card__cta">
+              <a href="#contact" class="btn btn--outline-dark">Enquire</a>
+            </div>
+          </article>
+
+          <!-- Continuous -->
+          <article class="tier-card tier--continuous" role="listitem">
+            <div class="tier-card__tier-badge">
+              <div class="tier-badge-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 11-.57-8.38"/>
+                </svg>
+              </div>
+              <span class="tier-card__tier-label">Continuous</span>
+            </div>
+            <h3 class="tier-card__name">Identity Health Monitoring</h3>
+            <p class="tier-card__tagline">Ongoing monitoring subscription after engagement.</p>
+            <div class="tier-card__divider"></div>
+            <div class="tier-card__includes-label">Ongoing Subscription</div>
+            <ul class="tier-card__features">
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                Continuous posture monitoring
+              </li>
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                Periodic reassessment cycles
+              </li>
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                Register drift alerting
+              </li>
+              <li class="tier-feature">
+                <span class="tier-feature__check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </span>
+                Annual governance review
+              </li>
+            </ul>
+            <div class="tier-card__cta">
+              <a href="#contact" class="btn btn--outline-dark">Enquire</a>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         FRAMEWORK ALIGNMENT (Trust Strip)
+    ========================================================= -->
+    <section class="framework" id="frameworks" aria-label="Framework and technology alignment">
+      <div class="container">
+        <div class="framework__inner">
+          <p class="framework__label">Framework &amp; Technology Alignment</p>
+          <div class="framework__strip" role="list">
+
+            <div class="framework__item" role="listitem">
+              <div class="framework__item-icon" aria-hidden="true">
+                <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="28" height="28" rx="4" fill="rgba(3,105,161,0.12)"/>
+                  <text x="14" y="19" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="10" font-weight="800" fill="#38BDF8">ODA</text>
+                </svg>
+              </div>
+              <span class="framework__item-name">ODA 10+7</span>
+            </div>
+
+            <div class="framework__item" role="listitem">
+              <div class="framework__item-icon" aria-hidden="true">
+                <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="28" height="28" rx="4" fill="rgba(3,105,161,0.12)"/>
+                  <path d="M7 14h14M7 10h14M7 18h10" stroke="#38BDF8" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="framework__item-name">Microsoft RAMP</span>
+            </div>
+
+            <div class="framework__item" role="listitem">
+              <div class="framework__item-icon" aria-hidden="true">
+                <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="28" height="28" rx="4" fill="rgba(3,105,161,0.12)"/>
+                  <path d="M14 6L6 10v8l8 4 8-4v-8L14 6z" stroke="#38BDF8" stroke-width="1.8" stroke-linejoin="round"/>
+                  <path d="M14 6v12M6 10l8 4 8-4" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="framework__item-name">Enterprise Access Model</span>
+            </div>
+
+            <div class="framework__item" role="listitem">
+              <div class="framework__item-icon" aria-hidden="true">
+                <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="28" height="28" rx="4" fill="rgba(3,105,161,0.12)"/>
+                  <rect x="7" y="7" width="14" height="10" rx="1.5" stroke="#38BDF8" stroke-width="1.8"/>
+                  <path d="M10 21h8M14 17v4" stroke="#38BDF8" stroke-width="1.8" stroke-linecap="round"/>
+                  <circle cx="14" cy="12" r="2.5" stroke="#38BDF8" stroke-width="1.5"/>
+                </svg>
+              </div>
+              <span class="framework__item-name">Active Directory</span>
+            </div>
+
+            <div class="framework__item" role="listitem">
+              <div class="framework__item-icon" aria-hidden="true">
+                <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="28" height="28" rx="4" fill="rgba(3,105,161,0.12)"/>
+                  <path d="M14 8a6 6 0 100 12A6 6 0 0014 8z" stroke="#38BDF8" stroke-width="1.8"/>
+                  <path d="M14 8c-2 0-3.5 2.7-3.5 6s1.5 6 3.5 6" stroke="#38BDF8" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M14 8c2 0 3.5 2.7 3.5 6s-1.5 6-3.5 6" stroke="#38BDF8" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M8 14h12" stroke="#38BDF8" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="framework__item-name">Microsoft Entra ID</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         ABOUT
+    ========================================================= -->
+    <section class="about section" id="about" aria-labelledby="aboutTitle">
+      <div class="container">
+        <div class="about__inner">
+
+          <div class="about__content">
+            <span class="section-label">About ArchIdent</span>
+            <h2 class="section-title" id="aboutTitle">Built for Hybrid Microsoft Estates. Nothing Else.</h2>
+            <p class="about__body">
+              ArchIdent is a productised identity security assessment and architecture firm with a single specialism: hybrid Microsoft environments where Active Directory and Microsoft Entra ID coexist, interact, and must be governed coherently.
+            </p>
+            <p class="about__body">
+              We work exclusively with enterprise organisations whose privileged access programmes have stalled — where registers are incomplete, governance is absent or theoretical, and remediation efforts are under-scoped. Our methodology, the ODA 10+7 framework, was built to resolve precisely these conditions.
+            </p>
+            <p class="about__body">
+              We do not build bespoke engagements. We do not adjust our methodology for preference. We do not operate outside our specialism. This is not a limitation — it is the source of our value.
+            </p>
+          </div>
+
+          <div class="about__stats" role="list">
+            <article class="about-stat" role="listitem">
+              <div class="about-stat__value">4<span>+7</span></div>
+              <p class="about-stat__label">ODA framework — four-volume methodology with seven core assessment domains</p>
+            </article>
+            <article class="about-stat" role="listitem">
+              <div class="about-stat__value">5<span>×</span></div>
+              <p class="about-stat__label">Product tiers — from initial baseline through to continuous health monitoring</p>
+            </article>
+            <article class="about-stat" role="listitem">
+              <div class="about-stat__value">100<span>%</span></div>
+              <p class="about-stat__label">Hybrid Microsoft — Active Directory and Entra ID, exclusively</p>
+            </article>
+            <article class="about-stat" role="listitem">
+              <div class="about-stat__value">0<span>+</span></div>
+              <p class="about-stat__label">Assumptions — every finding is grounded in verified discovery data</p>
+            </article>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         CTA SECTION
+    ========================================================= -->
+    <section class="cta-section section--lg" id="contact" aria-labelledby="ctaTitle">
+      <div class="container">
+        <div class="cta-section__inner">
+
+          <span class="cta-section__eyebrow">Start the Engagement</span>
+          <h2 class="cta-section__headline" id="ctaTitle">
+            Start with Bronze.<br/>
+            <em>Know Where You Stand.</em>
+          </h2>
+          <p class="cta-section__body">
+            The Identity Health Baseline is the right starting point for any organisation that does not have a verified, current Tier 0 asset register. Fixed scope. Fixed deliverables. No assumptions.
+          </p>
+
+          <div class="cta-section__actions">
+            <a href="mailto:contact@archident.com" class="btn btn--primary-lg">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              Contact Sales
+            </a>
+            <a href="#methodology" class="btn btn--outline-light">Read the Methodology</a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================
+       FOOTER
+  ========================================================= -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+
+      <div class="footer__top">
+
+        <div class="footer__brand">
+          <div class="footer__logo">
+            <div class="footer__logo-mark" aria-hidden="true">
+              <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M10 2L2 16h3.5l1.5-3h6l1.5 3H18L10 2zm0 3.5L12.8 11H7.2L10 5.5z" fill="white"/>
+              </svg>
+            </div>
+            <span class="footer__logo-name">ArchIdent</span>
+          </div>
+          <p class="footer__description">
+            Enterprise identity security assessment and architecture for hybrid Microsoft estates. Fixed scope. Fixed deliverables. Verified findings.
+          </p>
+          <p class="footer__tagline">Identity Architecture, Measured</p>
+        </div>
+
+        <nav aria-label="Methodology navigation">
+          <p class="footer__col-title">Methodology</p>
+          <ul class="footer__links" role="list">
+            <li><a href="#methodology" class="footer__link">ODA 10+7 Framework</a></li>
+            <li><a href="#methodology" class="footer__link">Vol I — Tier 0 Discovery</a></li>
+            <li><a href="#methodology" class="footer__link">Vol II — Governance Framework</a></li>
+            <li><a href="#methodology" class="footer__link">Vol III — Access Model Design</a></li>
+            <li><a href="#methodology" class="footer__link">Vol IV — RAMP Playbook</a></li>
+          </ul>
+        </nav>
+
+        <nav aria-label="Products navigation">
+          <p class="footer__col-title">Products</p>
+          <ul class="footer__links" role="list">
+            <li><a href="#products" class="footer__link">Bronze — Health Baseline</a></li>
+            <li><a href="#products" class="footer__link">Silver — Architecture</a></li>
+            <li><a href="#products" class="footer__link">Gold — Advisory</a></li>
+            <li><a href="#products" class="footer__link">Platinum — Execution</a></li>
+            <li><a href="#products" class="footer__link">Continuous — Monitoring</a></li>
+          </ul>
+        </nav>
+
+        <nav aria-label="Company navigation">
+          <p class="footer__col-title">Company</p>
+          <ul class="footer__links" role="list">
+            <li><a href="#about" class="footer__link">About</a></li>
+            <li><a href="#why" class="footer__link">Why ArchIdent</a></li>
+            <li><a href="#frameworks" class="footer__link">Framework Alignment</a></li>
+            <li><a href="#contact" class="footer__link">Contact Sales</a></li>
+          </ul>
+        </nav>
+
+      </div>
+
+      <div class="footer__bottom">
+        <p class="footer__copyright">
+          &copy; 2026 ArchIdent. All rights reserved.
+        </p>
+        <nav class="footer__legal" aria-label="Legal navigation">
+          <a href="#" class="footer__legal-link">Privacy Policy</a>
+          <a href="#" class="footer__legal-link">Terms of Engagement</a>
+        </nav>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- =========================================================
+       INLINE JAVASCRIPT
+  ========================================================= -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* ----------------------------------------------------------
+         Navbar scroll effect
+      ---------------------------------------------------------- */
+      var navbar = document.getElementById('navbar');
+      var scrollProgress = document.getElementById('scrollProgress');
+
+      function updateNavbar() {
+        var scrollY = window.scrollY || window.pageYOffset;
+        if (scrollY > 40) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+      }
+
+      /* ----------------------------------------------------------
+         Scroll progress bar
+      ---------------------------------------------------------- */
+      function updateScrollProgress() {
+        var scrollY = window.scrollY || window.pageYOffset;
+        var docH = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        var pct = docH > 0 ? (scrollY / docH) * 100 : 0;
+        scrollProgress.style.width = pct + '%';
+      }
+
+      window.addEventListener('scroll', function () {
+        updateNavbar();
+        updateScrollProgress();
+      }, { passive: true });
+
+      // Initial state
+      updateNavbar();
+
+      /* ----------------------------------------------------------
+         Hamburger / mobile menu
+      ---------------------------------------------------------- */
+      var hamburger = document.getElementById('hamburger');
+      var mobileMenu = document.getElementById('mobileMenu');
+      var mobileLinks = mobileMenu.querySelectorAll('a');
+
+      function openMenu() {
+        hamburger.classList.add('open');
+        hamburger.setAttribute('aria-expanded', 'true');
+        mobileMenu.classList.add('open');
+        mobileMenu.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeMenu() {
+        hamburger.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+        mobileMenu.classList.remove('open');
+        mobileMenu.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      hamburger.addEventListener('click', function () {
+        if (mobileMenu.classList.contains('open')) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      // Close on link click
+      mobileLinks.forEach(function (link) {
+        link.addEventListener('click', function () {
+          closeMenu();
+        });
+      });
+
+      // Close on outside click
+      document.addEventListener('click', function (e) {
+        if (mobileMenu.classList.contains('open') &&
+            !mobileMenu.contains(e.target) &&
+            !hamburger.contains(e.target)) {
+          closeMenu();
+        }
+      });
+
+      // Close on resize to desktop
+      window.addEventListener('resize', function () {
+        if (window.innerWidth > 768 && mobileMenu.classList.contains('open')) {
+          closeMenu();
+        }
+      });
+
+      /* ----------------------------------------------------------
+         Smooth scroll for anchor links (polyfill for older browsers)
+      ---------------------------------------------------------- */
+      document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+        anchor.addEventListener('click', function (e) {
+          var target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            e.preventDefault();
+            var navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 72;
+            var targetY = target.getBoundingClientRect().top + window.scrollY - navH - 8;
+            window.scrollTo({ top: targetY, behavior: 'smooth' });
+          }
+        });
+      });
+
+      /* ----------------------------------------------------------
+         Intersection Observer — subtle fade-in on scroll
+      ---------------------------------------------------------- */
+      var style = document.createElement('style');
+      style.textContent = [
+        '.anim-ready { opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease, transform 0.55s ease; }',
+        '.anim-ready.anim-visible { opacity: 1; transform: translateY(0); }'
+      ].join('\n');
+      document.head.appendChild(style);
+
+      var animTargets = document.querySelectorAll(
+        '.problem-card, .why-card, .method-card, .tier-card, .about-stat, .framework__item'
+      );
+
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              // Stagger delay based on sibling index
+              var siblings = Array.from(entry.target.parentNode.children);
+              var idx = siblings.indexOf(entry.target);
+              entry.target.style.transitionDelay = (idx * 80) + 'ms';
+              entry.target.classList.add('anim-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        animTargets.forEach(function (el) {
+          el.classList.add('anim-ready');
+          observer.observe(el);
+        });
+      }
+
+    })();
+  </script>
+
+</body>
+</html>
